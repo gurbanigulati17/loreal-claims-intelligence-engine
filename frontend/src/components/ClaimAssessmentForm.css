@@ -1,0 +1,173 @@
+.claims-app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  color: #1a1a1a;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.claims-header {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: #6b2d5c;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.claims-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  color: #555;
+  max-width: 52ch;
+}
+
+.claims-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .claims-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.claims-form,
+.claims-result {
+  background: #fff;
+  border: 1px solid #e8e0e6;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 24px rgba(107, 45, 92, 0.06);
+}
+
+.claims-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.claims-form input,
+.claims-form textarea {
+  font: inherit;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d9cfd6;
+  border-radius: 8px;
+  background: #faf8f9;
+}
+
+.claims-form button {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6b2d5c, #9b3d7a);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.claims-form button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.claims-result h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.placeholder,
+.loading {
+  color: #777;
+}
+
+.error {
+  color: #b42318;
+  background: #fef3f2;
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.verdict {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: 1.25rem;
+}
+
+.verdict.yes {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.verdict.no {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.metric strong {
+  font-size: 1.1rem;
+}
+
+.score-bar {
+  height: 8px;
+  background: #eee;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.35rem 0;
+}
+
+.score-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6b2d5c, #d4a5c8);
+  border-radius: 999px;
+}
+
+.reasoning p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #888;
+  border-top: 1px solid #eee;
+  padding-top: 0.75rem;
+}

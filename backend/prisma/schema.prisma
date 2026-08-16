@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Claim {
+  id             String       @id @default(uuid())
+  title          String
+  claimText      String
+  claimType      String       @default("EFFICACY")
+  productFormula String?
+  scientistId    String?
+  scientistName  String?
+  status         String       @default("SUBMITTED")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  assessments    Assessment[]
+
+  @@index([status])
+  @@index([scientistId])
+}
+
+model Assessment {
+  id              String   @id @default(uuid())
+  claimId         String
+  claim           Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  evidence        String
+  justified       Boolean
+  confidenceScore Float
+  reasoning       String
+  modelUsed       String?
+  evaluatorId     String?
+  createdAt       DateTime @default(now())
+
+  @@index([claimId])
+  @@index([justified])
+}
