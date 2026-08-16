@@ -26,6 +26,154 @@ Without `OPENAI_API_KEY`, the API uses a deterministic **mock evaluator** so the
 
 ---
 
+## Run & test
+
+### Start backend
+
+```bash
+cd backend
+cp .env.example .env          # first time only
+npx prisma migrate dev        # first time only
+npm run start:dev
+```
+
+Backend runs at: **http://localhost:3000**
+
+### Start frontend
+
+Open a **second terminal**:
+
+```bash
+cd frontend
+cp .env.example .env          # first time only
+npm run dev
+```
+
+Frontend runs at: **http://localhost:5173**
+
+### Test frontend (UI)
+
+1. Open **http://localhost:5173** in your browser.
+2. The form is pre-filled with sample claim + clinical evidence.
+3. Click **Assess claim justification**.
+4. Verify the result panel shows:
+   - **Justified**: Yes / No
+   - **Confidence score**: percentage bar
+   - **Reasoning**: LLM or mock explanation
+
+### Test backend APIs (curl)
+
+Base URL: `http://localhost:3000`
+
+#### 1. Assess claim — justified example (strong evidence)
+
+```bash
+curl -X POST http://localhost:3000/api/claims/assess \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Anti-wrinkle serum — 4 week study",
+    "claimText": "Reduces wrinkles by 20% in 4 weeks",
+    "productFormula": "Aqua, Glycerin, Retinol 0.3%, Niacinamide 5%, Hyaluronic Acid, Peptide complex",
+    "scientistName": "Dr. Marie Dupont",
+    "claimType": "EFFICACY",
+    "evidence": "Double-blind randomized study, n=62 women aged 45-60, 4-week daily application. Primary endpoint: clinical grading of crow'\''s feet wrinkles. Results: 19.4% mean reduction vs baseline (p < 0.01). Placebo group: 3.1% (p=0.42). No serious adverse events."
+  }'
+```
+
+Expected (mock mode): `justified: true`, `confidenceScore` ~0.82, `status: "APPROVED"`
+
+#### 2. Assess claim — not justified example (weak evidence)
+
+```bash
+curl -X POST http://localhost:3000/api/claims/assess \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Hydration booster — 1 week study",
+    "claimText": "Increases skin hydration by 50% in 1 week",
+    "productFormula": "Aqua, Glycerin 10%",
+    "scientistName": "Dr. Jean Martin",
+    "evidence": "Informal user feedback from 5 volunteers. No control group. No statistical analysis performed."
+  }'
+```
+
+Expected (mock mode): `justified: false`, lower `confidenceScore`, `status: "REJECTED"`
+
+#### 3. List all claims
+
+```bash
+curl http://localhost:3000/api/claims
+```
+
+#### 4. Get claim by ID
+
+Replace `CLAIM_ID` with an `id` from the assess or list response:
+
+```bash
+curl http://localhost:3000/api/claims/CLAIM_ID
+```
+
+#### 5. Health check (root)
+
+```bash
+curl http://localhost:3000
+```
+
+### Test backend APIs (Postman / Thunder Client)
+
+| Method | URL | Body |
+|--------|-----|------|
+| `POST` | `http://localhost:3000/api/claims/assess` | JSON payload (see examples above) |
+| `GET`  | `http://localhost:3000/api/claims` | — |
+| `GET`  | `http://localhost:3000/api/claims/:id` | — |
+
+**POST body fields**
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `title` | Yes | Study / submission title |
+| `claimText` | Yes | Marketing claim to evaluate |
+| `evidence` | Yes | Clinical study evidence text |
+| `productFormula` | No | Ingredient list |
+| `scientistName` | No | Submitting scientist |
+| `scientistId` | No | Scientist identifier |
+| `evaluatorId` | No | Evaluator identifier |
+| `claimType` | No | `EFFICACY`, `SAFETY`, `SENSORY`, `SUSTAINABILITY`, `OTHER` |
+
+**Sample success response**
+
+```json
+{
+  "claim": {
+    "id": "a265ec29-d310-4d61-a946-f068f566a468",
+    "title": "Anti-wrinkle serum — 4 week study",
+    "claimText": "Reduces wrinkles by 20% in 4 weeks",
+    "status": "APPROVED",
+    "createdAt": "2026-08-16T06:45:38.222Z"
+  },
+  "assessment": {
+    "id": "fa0014a2-5d0c-4774-aad0-21e2974d7bdc",
+    "justified": true,
+    "confidenceScore": 0.82,
+    "reasoning": "Evidence includes statistical significance and sample size...",
+    "modelUsed": "mock-evaluator-v1"
+  }
+}
+```
+
+### Build for production (optional)
+
+```bash
+# Backend
+cd backend && npm run build && npm run start:prod
+
+# Frontend
+cd frontend && npm run build && npm run preview
+```
+
+Preview URL after build: **http://localhost:4173**
+
+---
+
 ## 1. Business process understanding
 
 ### End-to-end flow
